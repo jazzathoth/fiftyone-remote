@@ -7,6 +7,7 @@
 
 **The open-source tool for building high-quality datasets and computer vision
 models**
+Modified to allow for images and masks using s3:// bucket urls. Modified by jazzathoth
 
 ---
 
