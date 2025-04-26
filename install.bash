@@ -91,7 +91,7 @@ if [ ${SCRATCH_MONGODB_INSTALL} = true ]; then
     cd -
 else
     echo "***** INSTALLING FIFTYONE-DB *****"
-    pip install fiftyone-db
+    pip install --retries 5 fiftyone-db
 fi
 
 echo "***** INSTALLING FIFTYONE-BRAIN *****"
@@ -101,22 +101,22 @@ if [ ${SOURCE_BRAIN_INSTALL} = true ]; then
     if [ ${DEV_INSTALL} = true ]; then
         bash install.bash -d
     else
-        pip install .
+        pip install --retries 5 .
     fi
     cd ..
 else
     echo "Cloning FiftyOne Brain repository"
-    pip install --upgrade fiftyone-brain
+    pip install --retries 5 --upgrade fiftyone-brain
 fi
 
 echo "***** INSTALLING FIFTYONE *****"
 if [ ${DEV_INSTALL} = true ]; then
     echo "Performing dev install"
-    pip install -r requirements/dev.txt
+    pip install --retries 5 -r requirements/dev.txt
     pre-commit install
     pip install -e .
 else
-    pip install -r requirements.txt
+    pip install --retries 5 -r requirements.txt
     pip install .
 fi
 
