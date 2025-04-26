@@ -59,15 +59,23 @@ export class ImageElement extends BaseElement<ImageState, HTMLImageElement> {
   }
 
   renderSelf({ config: { src } }: Readonly<ImageState>) {
-    if (this.src !== src) {
-      this.src = src;
+    let resolvedSrc = src;
+
+    if (resolvedSrc.startsWith("s3://")) {
+      const enc = encodeURIComponent(resolvedSrc);
+      resolvedSrc = `/media?filepath=${enc}`;
+    }
+
+    if (this.src !== resolvedSrc) {
+      this.src = resolvedSrc;
       this.retryCount = 0;
       if (this.timeoutId !== null) {
         window.clearTimeout(this.timeoutId);
         this.timeoutId = null;
       }
-      this.element.setAttribute("src", src);
+      this.element.setAttribute("src", resolvedSrc);
     }
+
     return null;
   }
 }
