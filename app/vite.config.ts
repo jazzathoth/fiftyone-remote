@@ -5,6 +5,13 @@ import relay from "vite-plugin-relay";
 const { DISABLE_COVERAGE } = process.env;
 
 export default defineConfig({
+  build: {
+    terserOptions: {
+      compress: {
+        drop_console: false,
+      },
+    },
+  }
   test: {
     environment: "jsdom",
     coverage: {

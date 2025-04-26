@@ -13,6 +13,9 @@ export default <UserConfig>{
     },
     target: "es2015",
     minify: false,
+    terserOptions: {
+      compress: { drop_console: false },
+    }
   },
   resolve: {
     alias: {

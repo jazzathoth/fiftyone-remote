@@ -7,6 +7,7 @@ File storage utilities.
 """
 from contextlib import contextmanager
 from datetime import datetime
+from urllib.parse import urlparse
 import enum
 import json
 import logging
@@ -126,7 +127,11 @@ def normalize_path(path):
     Returns:
         the normalized path
     """
-    return os.path.abspath(os.path.expanduser(path))
+    scheme = urlparse(path).scheme.lower()
+    if scheme in ("http", "https", "s3"):
+        return path
+    else:
+        return os.path.abspath(os.path.expanduser(path))
 
 
 def make_temp_dir(basedir=None):
