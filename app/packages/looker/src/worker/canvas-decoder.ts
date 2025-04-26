@@ -49,7 +49,9 @@ export const decodeWithCanvas = async (
 ) => {
   let channels: number = numOriginalChannels;
 
+  console.log("[decodeWithCanvas] ready to createImageBitmap");
   const imageBitmap = await createImageBitmap(blob);
+  console.log("[decodeWithCanvas] finished createImageBitmap");
   const { width, height } = imageBitmap;
 
   const { canvas: offScreenCanvas, ctx: offScreenCanvasCtx } = canvasAndCtx!;
@@ -57,11 +59,15 @@ export const decodeWithCanvas = async (
   offScreenCanvas.width = width;
   offScreenCanvas.height = height;
 
+  console.log("[decodeWithCanvas] ready to drawImage");
   offScreenCanvasCtx.drawImage(imageBitmap, 0, 0);
+  console.log("[decodeWithCanvas] finished drawImage")
 
   imageBitmap.close();
 
+  console.log("[decodeWithCanvas] getting imageData from offScreenCanvasCtx");
   const imageData = offScreenCanvasCtx.getImageData(0, 0, width, height);
+  console.log("[decodeWithCanvas] got imageData from offScreenCanvasCtx");
 
   let targetsBuffer = imageData.data.buffer;
 
@@ -83,6 +89,7 @@ export const decodeWithCanvas = async (
   }
 
   // if it's segmentation, we need to recast according to whether or not this field is mapped to RGB targets
+  console.log("[decodeWithCanvas] is ready to recast according to targets");
   if (cls === SEGMENTATION) {
     let maskTargets = coloring.maskTargets?.[field];
     if (maskTargets === undefined) {

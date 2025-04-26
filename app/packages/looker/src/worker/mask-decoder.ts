@@ -42,35 +42,46 @@ export const decodeMaskOnDisk = async (
 ) => {
   let channels: number = 4;
 
-  if (blob.type !== "image/jpg" && blob.type !== "image/jpeg") {
-    const headerInfo = await getMaybePngHeader(blob);
+  console.group("[DEBUG mask blob]");
+  console.log(" blob.type:", blob.type);
+  console.log(" blob.size:", blob.size);               // <-- total bytes
+  const arr = new Uint8Array(await blob.arrayBuffer());
+  console.log(" arrayBuffer.byteLength:", arr.byteLength);
+  console.log(" first 16 bytes:", Array.from(arr.slice(0, 16)));
+  console.groupEnd();
 
-    if (!headerInfo) {
-      // ambiguous mask type, default to canvas decoding
-      return decodeWithCanvas(blob, cls, channels, field, coloring);
-    }
+  const headerInfo = await getMaybePngHeader(blob);
+  console.log(`[decodeMaskOnDisk] png header info, bitDepth: ${headerInfo.bitDepth}, colorType: ${headerInfo.colorType}`);
 
-    const { bitDepth, colorType } = headerInfo;
-
-    if (colorType !== undefined) {
-      if (bitDepth === 16) {
-        // browser doesn't natively parse 16 bit pngs, we'll use a 3pp library
-        return customDecode16BitPng(blob);
-      }
-
-      // according to PNG specs:
-      // 0: Grayscale          => 1 channel
-      // 2: Truecolor (RGB)   => (would be 3 channels, but we can safely use 4)
-      // 3: Indexed-color     => (palette-based, treat as non-grayscale => 4)
-      // 4: Grayscale+Alpha    => Grayscale image (so treat as grayscale => 1)
-      // 6: RGBA               => non-grayscale => 4
-      if (colorType === 0 || colorType === 4) {
-        channels = 1;
-      } else {
-        channels = 4;
-      }
-    }
-  }
+  // if (blob.type !== "image/jpg" && blob.type !== "image/jpeg") {
+  //   const headerInfo = await getMaybePngHeader(blob);
+  //
+  //   if (!headerInfo) {
+  //     // ambiguous mask type, default to canvas decoding
+  //     return decodeWithCanvas(blob, cls, channels, field, coloring);
+  //   }
+  //
+  //   const { bitDepth, colorType } = headerInfo;
+  //
+  //   if (colorType !== undefined) {
+  //     if (bitDepth === 16) {
+  //       // browser doesn't natively parse 16 bit pngs, we'll use a 3pp library
+  //       return customDecode16BitPng(blob);
+  //     }
+  //
+  //     // according to PNG specs:
+  //     // 0: Grayscale          => 1 channel
+  //     // 2: Truecolor (RGB)   => (would be 3 channels, but we can safely use 4)
+  //     // 3: Indexed-color     => (palette-based, treat as non-grayscale => 4)
+  //     // 4: Grayscale+Alpha    => Grayscale image (so treat as grayscale => 1)
+  //     // 6: RGBA               => non-grayscale => 4
+  //     if (colorType === 0 || colorType === 4) {
+  //       channels = 1;
+  //     } else {
+  //       channels = 4;
+  //     }
+  //   }
+  // }
 
   return decodeWithCanvas(blob, cls, channels, field, coloring);
 };

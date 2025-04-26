@@ -32,6 +32,10 @@ const processFetchQueue = () => {
 
   const { request, resolve, reject } = requestQueue.shift();
   activeRequests++;
+  // jazzathoth debug
+  console.log(`[processFetchQueue] got a request to process, 
+              url: ${request.url},
+              options: ${request.options}`);
 
   fetchWithLinearBackoff(request.url, request.options, request.retryOptions)
     .then((response) => {

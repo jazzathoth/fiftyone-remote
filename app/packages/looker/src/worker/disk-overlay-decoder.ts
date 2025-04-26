@@ -101,6 +101,7 @@ export const decodeOverlayOnDisk = async (
 
   let overlayImageBlob: Blob;
   try {
+    console.log(`[decodeOverlayOnDisk] adding url to fetch queue, url: ${overlayImageUrl}`);
     const overlayImageFetchResponse = await enqueueFetch({
       url: overlayImageUrl,
       options: { priority: "low" },

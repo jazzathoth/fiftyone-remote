@@ -133,6 +133,10 @@ const processLabels = async (
             activePaths,
           })
         ) {
+          console.log(`[processLabels] adding to maskPathDecodingPromises`);
+          console.log(`[processLabels] prefix: ${prefix || ""}${field}, 
+                      label: ${label}, 
+                      sources: ${sources}`);
           maskPathDecodingPromises.push(
             // note: if it's an already decoded label, this will be cheap
             decodeOverlayOnDisk(
@@ -354,6 +358,13 @@ const processSample = async ({
   }
 
   mapId(sample);
+  console.log(`[processSample] called with args: , 
+              sample: ${sample}, 
+              uuid: ${uuid}, 
+              coloring: ${coloring}, 
+              sources: ${sources}, 
+              schema: ${schema}, 
+              activePaths: ${activePaths}`);
 
   const imageBitmapPromises: Promise<ImageBitmap[]>[] = [];
   let maskTargetsBuffers: ArrayBuffer[] = [];
@@ -695,6 +706,7 @@ type Method =
 
 if (typeof onmessage !== "undefined") {
   onmessage = ({ data: { method, ...args } }: MessageEvent<Method>) => {
+    console.log(`[onmessage] got method: ${method} with args: ${args}`)
     switch (method) {
       case "init":
         init(args as Init);

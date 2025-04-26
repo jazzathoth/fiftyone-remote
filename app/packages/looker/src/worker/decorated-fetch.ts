@@ -1,3 +1,4 @@
+import { getFetchParameters } from "@fiftyone/utilities";
 const DEFAULT_MAX_RETRIES = 10;
 const DEFAULT_BASE_DELAY = 200;
 // list of HTTP status codes that are client errors (4xx) and should not be retried
@@ -22,6 +23,21 @@ export const fetchWithLinearBackoff = async (
     delay: DEFAULT_BASE_DELAY,
   }
 ) => {
+  const { origin, pathPrefix } = getFetchParameters();
+  // if (url.startsWith("s3://")) {
+  //   url = `${pathPrefix}${encodeURIComponent(url)}`;
+  //   console.log("[fetchWithLinearBackoff] proxied to REL", url);
+  // }
+  // 
+  // if (url.startsWith(pathPrefix)) {
+  //   url = `${origin}${url}`;
+  //   console.log("[fetchWithLinearBackoff] expanded to ABS:", url);
+  // }
+  if (url.startsWith("s3://")) {
+    url = `${origin}/media?filepath=${encodeURIComponent(url)}`;
+    console.log("[fetchWithLinearBackoff] proxied to: ", url);
+  }
+
   for (let i = 0; i < retry.retries; i++) {
     try {
       const response = await fetch(url, opts);
