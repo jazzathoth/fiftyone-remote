@@ -91,7 +91,7 @@ if [ ${SCRATCH_MONGODB_INSTALL} = true ]; then
     cd -
 else
     echo "***** INSTALLING FIFTYONE-DB *****"
-    pip install --retries 5 fiftyone-db
+    pip --no-cache-dir install --retries 5 --timeout 60 fiftyone-db
 fi
 
 echo "***** INSTALLING FIFTYONE-BRAIN *****"
@@ -101,22 +101,22 @@ if [ ${SOURCE_BRAIN_INSTALL} = true ]; then
     if [ ${DEV_INSTALL} = true ]; then
         bash install.bash -d
     else
-        pip install --retries 5 .
+        pip --no-cache-dir install --retries 5 --timeout 60 .
     fi
     cd ..
 else
     echo "Cloning FiftyOne Brain repository"
-    pip install --retries 5 --upgrade fiftyone-brain
+    pip --no-cache-dir install --retries 5 --timeout 60 fiftyone-brain
 fi
 
 echo "***** INSTALLING FIFTYONE *****"
 if [ ${DEV_INSTALL} = true ]; then
     echo "Performing dev install"
-    pip install --retries 5 -r requirements/dev.txt
+    pip --no-cache-dir install --retries 5 --timeout 60 -r requirements/dev.txt
     pre-commit install
     pip install -e .
 else
-    pip install --retries 5 -r requirements.txt
+    pip --no-cache-dir install --retries 5 --timeout 60 -r requirements.txt
     pip install .
 fi
 
