@@ -9,6 +9,9 @@
 models**
 
 ---
+Modified to allow for images and masks using s3:// bucket urls. Modified by jazzathoth
+
+---
 
 <!-- prettier-ignore -->
 <a href="https://voxel51.com/fiftyone">Website</a> •
